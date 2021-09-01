@@ -84,13 +84,13 @@ sensor:
     name: "aluminium plate"
     id: aluminiumPlate
     cs_pin: GPIO4
-    reference_resistance: 430 Ω
-    rtd_nominal_resistance: 100 Ω
+    reference_resistance: 4300 Ω
+    rtd_nominal_resistance: 1000 Ω
     mains_filter: 50 Hz
     update_interval: 5s
     rtd_wires: 2
     filters:
-    - offset: 0.0
+    - offset: -0.25
     on_value:
       then:
         - lambda: 'id(nextion1)->set_component_value("n_aluplate", x*10.0);'
@@ -104,7 +104,7 @@ sensor:
     update_interval: 5s
     rtd_wires: 2
     filters:
-    - offset: -0.25   
+    - offset: 0.2   
     on_value:
       then:
         - lambda: 'id(nextion1)->set_component_value("n_slush", x*10.0);'

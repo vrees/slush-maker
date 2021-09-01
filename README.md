@@ -36,8 +36,8 @@ Reference: 6.0 °C
 [14:03:32][D][sensor:131]: 'coolant water': Sending state 5.73616 °C with 2 decimals of accuracy
 [14:03:33][D][sensor:131]: 'aluminium plate': Sending state 5.63946 °C with 2 decimals of accuracy
 
-Reference: 23.7 °C 
-[14:36:16][D][sensor:131]: 'coolant water': Sending state 23.75471 °C with 2 decimals of accuracy
-[14:36:16][D][sensor:131]: 'Slush Ice': Sending state 23.67699 °C with 2 decimals of accuracy
-[14:36:20][D][sensor:131]: 'Reserve': Sending state 23.60786 °C with 2 decimals of accuracy
-[14:36:21][D][sensor:131]: 'aluminium plate': Sending state 23.78418 °C with 2 decimals of accuracy
+Reference: 23.3 °C 
+[14:39:53][D][sensor:131]: 'aluminium plate': Sending state 23.22699 °C with 2 decimals of accuracy
+[14:39:54][D][sensor:131]: 'coolant water': Sending state 23.24752 °C with 2 decimals of accuracy
+[14:39:58][D][sensor:131]: 'Slush Ice': Sending state 23.16980 °C with 2 decimals of accuracy
+[14:39:58][D][sensor:131]: 'Reserve': Sending state 23.13454 °C with 2 decimals of accuracy
