@@ -76,7 +76,7 @@ sensor:
     update_interval: 5s
     rtd_wires: 2
     filters:
-    - offset: -0.44
+    - offset: -0.5
     on_value:
       then:
         - lambda: 'id(nextion1)->set_component_value("n_coolant", x*10.0);'
@@ -90,7 +90,7 @@ sensor:
     update_interval: 5s
     rtd_wires: 2
     filters:
-    - offset: 3.8
+    - offset: 0.0
     on_value:
       then:
         - lambda: 'id(nextion1)->set_component_value("n_aluplate", x*10.0);'
@@ -104,7 +104,7 @@ sensor:
     update_interval: 5s
     rtd_wires: 2
     filters:
-    - offset: 0.1    
+    - offset: -0.2   
     on_value:
       then:
         - lambda: 'id(nextion1)->set_component_value("n_slush", x*10.0);'
@@ -118,7 +118,7 @@ sensor:
     update_interval: 5s
     rtd_wires: 2
     filters:
-    - offset: 0.25    
+    - offset: 0.3    
     on_value:
       then:
         - lambda: 'id(nextion1)->set_component_value("n_reserve", x*10.0);'
