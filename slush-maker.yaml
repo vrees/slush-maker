@@ -1,8 +1,3 @@
-# ESP Configuration of the Slush Maker Machine by Vikotr Rees
-# This is a Backup copy
-# The Origninal is here: http://192.168.178.84:8123/a0d7b954_esphome/dashboard
-
-
 esphome:
   name: slush-maker
   platform: ESP32
@@ -47,13 +42,13 @@ display:
     uart_id: uart_2
     tft_url: http://192.168.178.84:8123/local/slush-maker.HMI
     lambda: |-
-      it.set_component_value("n_slush", 999);
-      it.set_component_value("n_aluplate", -999);
       it.set_component_text("b0", "ButBut");
       it.set_component_text("t_speed", "19.9");
       it.set_component_value("h_speed", 13);      
       
-      
+#      it.set_component_value("n_aluplate", -999);
+
+# on button click update TFF software from Webserver      
 binary_sensor:
   - platform: gpio
     pin:
@@ -73,14 +68,59 @@ spi:
 sensor:
   - platform: max31865
     name: "coolant water"
-    id: pt10001
+    id: coolantWater
     cs_pin: GPIO5
     reference_resistance: 4300 Ω
     rtd_nominal_resistance: 1000 Ω
     mains_filter: 50 Hz
     update_interval: 5s
     rtd_wires: 2
+    filters:
+    - offset: -0.44
     on_value:
       then:
-        - lambda: 'id(nextion1)->set_component_value("n_coolant", x*10.0);;'
+        - lambda: 'id(nextion1)->set_component_value("n_coolant", x*10.0);'
+  - platform: max31865
+    name: "aluminium plate"
+    id: aluminiumPlate
+    cs_pin: GPIO4
+    reference_resistance: 430 Ω
+    rtd_nominal_resistance: 100 Ω
+    mains_filter: 50 Hz
+    update_interval: 5s
+    rtd_wires: 2
+    filters:
+    - offset: 3.8
+    on_value:
+      then:
+        - lambda: 'id(nextion1)->set_component_value("n_aluplate", x*10.0);'
+  - platform: max31865
+    name: "Slush Ice"
+    id: slushIce
+    cs_pin: GPIO26
+    reference_resistance: 4300 Ω
+    rtd_nominal_resistance: 1000 Ω
+    mains_filter: 50 Hz
+    update_interval: 5s
+    rtd_wires: 2
+    filters:
+    - offset: 0.1    
+    on_value:
+      then:
+        - lambda: 'id(nextion1)->set_component_value("n_slush", x*10.0);'
+  - platform: max31865
+    name: "Reserve"
+    id: reserve
+    cs_pin: GPIO25
+    reference_resistance: 4300 Ω
+    rtd_nominal_resistance: 1000 Ω
+    mains_filter: 50 Hz
+    update_interval: 5s
+    rtd_wires: 2
+    filters:
+    - offset: 0.25    
+    on_value:
+      then:
+        - lambda: 'id(nextion1)->set_component_value("n_reserve", x*10.0);'
+
 
