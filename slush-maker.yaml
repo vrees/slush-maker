@@ -177,8 +177,8 @@ sensor:
       then:
         - lambda: |-
             id(motor_speed) = x * 50;
-            id(nextion1)->set_component_value("motorSpeedText", id(motor_speed));
-            ESP_LOGD("custom", "motor_speed is: %f. Slider is %f", id(motor_speed), x);
+            id(nextion1)->set_component_text("motorSpeedText", "xx");
+            ESP_LOGD("custom", "motor_speed is: %4.0f. Slider is %3.0f", id(motor_speed), x);
         - script.execute: switchMotorOnOff
 
 
