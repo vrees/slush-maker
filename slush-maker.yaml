@@ -2,7 +2,12 @@ esphome:
   name: slush-maker
   platform: ESP32
   board: esp32dev
-
+  # on_boot:
+  #   then:
+  #     - stepper.set_target:
+  #         id: mixer
+  #         target: 100000
+          
 # Enable logging
 logger:
 
@@ -28,12 +33,41 @@ wifi:
 
 captive_portal:
 
+globals:
+  - id: motor_speed
+    type: float
+    restore_value: no
+    initial_value: '500'
 
 uart:
   id: uart_2
   rx_pin: GPIO16
   tx_pin: GPIO17
   baud_rate: 115200
+
+script:
+  - id: switchMotorOnOff
+    then:
+      - if:
+          condition:
+            binary_sensor.is_on: buttonMotor            
+          then:
+            - stepper.set_target:
+                id: mixer
+                target: 10000
+            - stepper.report_position:
+                id: mixer
+                position: 0
+            - stepper.set_speed:
+                id: mixer
+                speed: !lambda 'return id(motor_speed);'  
+          else:
+            - stepper.set_target:
+                id: mixer
+                target: 0
+            - stepper.report_position:
+                id: mixer
+                position: 0
 
 
 display:
@@ -59,7 +93,18 @@ binary_sensor:
     on_press:
       then:
         - lambda: 'id(nextion1)->upload_tft();'
-        
+  - platform: nextion
+    id: buttonMotor
+    component_name: "buttonMotor"
+    page_id: "0"
+    component_id: "15"
+    name: "Motor Ein/Aus"
+    # component_name: page0.r0 # r0 is a global component in the Nextion Editor on page 0
+    update_interval: 1s
+    on_state:
+      then:
+        - script.execute: switchMotorOnOff
+    
 spi:
   miso_pin: GPIO19
   mosi_pin: GPIO23
@@ -69,7 +114,7 @@ sensor:
   - platform: max31865
     name: "coolant water"
     id: coolantWater
-    cs_pin: GPIO5
+    cs_pin: GPIO4
     reference_resistance: 4300 Ω
     rtd_nominal_resistance: 1000 Ω
     mains_filter: 50 Hz
@@ -83,7 +128,7 @@ sensor:
   - platform: max31865
     name: "aluminium plate"
     id: aluminiumPlate
-    cs_pin: GPIO4
+    cs_pin: GPIO5
     reference_resistance: 4300 Ω
     rtd_nominal_resistance: 1000 Ω
     mains_filter: 50 Hz
@@ -107,7 +152,7 @@ sensor:
     - offset: 0.2   
     on_value:
       then:
-        - lambda: 'id(nextion1)->set_component_value("n_slush", x*10.0);'
+        - lambda: 'id(nextion1)->set_component_value("n_slush", x*10.0);'    
   - platform: max31865
     name: "Reserve"
     id: reserve
@@ -121,6 +166,35 @@ sensor:
     - offset: 0.3    
     on_value:
       then:
-        - lambda: 'id(nextion1)->set_component_value("n_reserve", x*10.0);'
+        - lambda: 'id(nextion1)->set_component_value("n_reserve", x*10.0);'    
+        - script.execute: switchMotorOnOff
+  - platform: nextion
+    name: "Motor Speed Slider"
+    id: motorSpeedSlid
+    component_name: motorSpeedSlid # pageX.humidity for a global
+    update_interval: 2s
+    on_value:
+      then:
+        - lambda: |-
+            id(motor_speed) = x * 50;
+            id(nextion1)->set_component_value("motorSpeedText", id(motor_speed));
+            ESP_LOGD("custom", "motor_speed is: %f. Slider is %f", id(motor_speed), x);
+        - script.execute: switchMotorOnOff
 
+
+# id(motor_speed) = motorSpeedSlider.val/100 * 2000;
+
+stepper:
+  - platform: a4988
+    id: mixer
+    step_pin: GPIO33
+    dir_pin: GPIO32
+    max_speed: 1000 steps/s
+    # acceleration: 1000 steps/s^2
+
+# id=15, buttonMotor 
+# id=5, motorSpeedText
+# id=3, motorSpeedSlid
+# motorSpeedText.txt="60"
+# motorSpeedSlid.val
 
