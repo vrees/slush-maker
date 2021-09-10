@@ -37,7 +37,7 @@ globals:
   - id: motor_speed
     type: float
     restore_value: no
-    initial_value: '500'
+    initial_value: '1500'
 
 uart:
   id: uart_2
@@ -176,13 +176,10 @@ sensor:
     on_value:
       then:
         - lambda: |-
-            id(motor_speed) = x * 50;
-            id(nextion1)->set_component_text("motorSpeedText", "xx");
-            ESP_LOGD("custom", "motor_speed is: %4.0f. Slider is %3.0f", id(motor_speed), x);
+            id(motor_speed) = x;
+            id(nextion1)->set_component_value("motorSpeedDisp", id(motor_speed));
+            ESP_LOGD("custom", "motor_speed is: %4.0f", id(motor_speed));
         - script.execute: switchMotorOnOff
-
-
-# id(motor_speed) = motorSpeedSlider.val/100 * 2000;
 
 stepper:
   - platform: a4988
@@ -192,9 +189,4 @@ stepper:
     max_speed: 1000 steps/s
     # acceleration: 1000 steps/s^2
 
-# id=15, buttonMotor 
-# id=5, motorSpeedText
-# id=3, motorSpeedSlid
-# motorSpeedText.txt="60"
-# motorSpeedSlid.val
 
