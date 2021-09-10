@@ -189,4 +189,3 @@ stepper:
     max_speed: 1000 steps/s
     # acceleration: 1000 steps/s^2
 
-
